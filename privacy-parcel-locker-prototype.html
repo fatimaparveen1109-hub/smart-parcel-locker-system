@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy Parcel Locker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f5;--sf:#fff;--ink:#12303b;--mu:#4f6a73;--ln:#d3dfe1;--tl:#0f766e;--ti:#fff;--am:#f2b632;--dr:#dfe9ea;--de:#b9ccd0;--bad:#b42318;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1d22;--sf:#152a31;--ink:#e6f0f1;--mu:#9bb3b9;--ln:#24424b;--tl:#2dd4bf;--ti:#06302b;--dr:#1d3a42;--de:#2c525c;--bad:#f97066}}
+:root[data-theme="dark"]{--bg:#0e1d22;--sf:#152a31;--ink:#e6f0f1;--mu:#9bb3b9;--ln:#24424b;--tl:#2dd4bf;--ti:#06302b;--dr:#1d3a42;--de:#2c525c;--bad:#f97066}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","DM Sans",system-ui,sans-serif;line-height:1.12;margin:0;letter-spacing:-.02em}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--sf);z-index:30}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--sf);border-bottom:1px solid var(--ln)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.logo{display:flex;align-items:center;gap:9px;font:800 17px "Bricolage Grotesque",sans-serif;cursor:pointer;background:none;border:0;color:var(--ink);padding:0}
+.logo i{width:24px;height:24px;border-radius:6px;background:var(--tl);display:grid;place-items:center}
+.logo i::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--am)}
+.btn,.chip,.tab{font:inherit;cursor:pointer;border-radius:10px}
+.btn{background:var(--tl);color:var(--ti);border:0;padding:10px 18px;font-weight:700}
+.btn.sm{padding:6px 12px;font-size:14px}.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--ln)}.btn[disabled]{opacity:.45;cursor:not-allowed}
+:is(.btn,.chip,.tab,.door,.logo,input,select):focus-visible{outline:3px solid var(--am);outline-offset:2px}
+.tab{background:none;border:0;padding:8px 14px;color:var(--mu);font-weight:700}.tab.on{background:var(--tl);color:var(--ti)}
+.chip{background:var(--sf);border:1px solid var(--ln);padding:6px 14px;color:var(--ink)}.chip.on{background:var(--ink);color:var(--bg)}
+.hero{padding:44px 0}.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+h1{font-size:clamp(32px,5.2vw,54px);font-weight:800}
+.lead{font-size:18px;color:var(--mu);max-width:46ch;margin:16px 0 24px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.wall{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.door{aspect-ratio:1/1;border-radius:8px;border:2px solid var(--de);background:var(--dr);color:var(--ink);font:700 13px "DM Sans";position:relative;display:flex;align-items:flex-end;padding:5px 7px}
+.door::after{content:"";position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--de)}
+.door.r{border-color:var(--tl)}.door.r::after{background:var(--tl)}.door.h{border-color:var(--am)}.door.h::after{background:var(--am)}
+section{padding:44px 0}h2{font-size:clamp(24px,3.4vw,34px);margin-bottom:8px}.sub{color:var(--mu);max-width:56ch;margin:0 0 26px}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);list-style:none;padding:0;margin:0;border-top:2px solid var(--ln);counter-reset:s}
+.steps li{counter-increment:s;padding:18px 12px 0 0;position:relative}
+.steps li::before{content:counter(s);position:absolute;top:-15px;left:0;width:28px;height:28px;border-radius:50%;background:var(--tl);color:var(--ti);font-weight:700;display:grid;place-items:center;font-size:14px}
+.steps h3{font-size:17px;margin:14px 0 4px}.steps p{margin:0;font-size:14px;color:var(--mu)}
+.roles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.role{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;border-top:5px solid var(--tl)}
+.role:nth-child(2){border-top-color:var(--am)}.role:nth-child(3){border-top-color:var(--ink)}.role:nth-child(4){border-top-color:var(--mu)}
+.role p{margin:0;color:var(--mu);font-size:15px;flex:1}
+.pay{background:var(--sf);border-block:1px solid var(--ln)}
+.opt{border:1px solid var(--ln);border-radius:12px;padding:14px 16px;background:var(--bg);margin-bottom:8px}.opt.no{opacity:.6;text-decoration:line-through}
+.links{display:flex;gap:22px}.links[hidden]{display:none}.links a{color:var(--mu);text-decoration:none;font-weight:500}.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feat div{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:16px}.feat b{display:block;font:700 17px 'Bricolage Grotesque',sans-serif;margin-bottom:4px}.feat span{color:var(--mu);font-size:15px}@media (max-width:900px){.feat{grid-template-columns:1fr 1fr}.links{display:none}}@media (max-width:520px){.feat{grid-template-columns:1fr}}
+footer{padding:26px 0 36px;color:var(--mu);font-size:14px}
+.who{font-weight:700;margin-right:auto;padding:6px 4px;white-space:nowrap}
+.bar{border-bottom:3px solid var(--tl)}#app[data-r=Seller] .bar{border-bottom-color:var(--am)}#app[data-r=Rider] .bar{border-bottom-color:var(--ink)}#app[data-r=Admin] .bar{border-bottom-color:var(--mu)}
+.card{box-shadow:0 1px 3px rgba(18,48,59,.07)}
+.pic{width:46px;height:46px;border-radius:12px;background:var(--dr);display:grid;place-items:center;font-size:24px;flex:none}
+#view.side{display:grid;grid-template-columns:210px minmax(0,1fr);column-gap:24px;align-items:start}
+#view.side>.sub2{grid-column:1;grid-row:1/span 40;position:sticky;top:132px;flex-direction:column;flex-wrap:nowrap;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:8px;gap:2px;margin:0}
+#view.side>*:not(.sub2){grid-column:2}
+#view.side .chip{text-align:left;border:0;background:transparent;padding:10px 14px;font-weight:500;border-radius:9px}
+#view.side .chip.on{background:var(--tl);color:var(--ti);font-weight:700}
+@media (max-width:900px){#view.side{display:block}#view.side>.sub2{position:static;flex-direction:row;overflow-x:auto;padding:6px;margin-bottom:14px}#view.side .chip{white-space:nowrap}}
+/* app */
+.bar{background:var(--sf);border-bottom:1px solid var(--ln);position:sticky;top:calc(60px + env(safe-area-inset-top,0px));z-index:15}
+.bar .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:8px}
+#view{padding:20px 18px 40px;max-width:1100px;margin:0 auto}
+.sub2{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.two{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:16px;margin-bottom:12px}
+.card h3{font-size:18px;margin-bottom:8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)}.row:last-child{border:0}
+.mu{color:var(--mu);font-size:14px}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700;background:var(--dr);color:var(--ink)}
+.badge.g{background:var(--tl);color:var(--ti)}.badge.a{background:var(--am);color:#2b2100}.badge.b{background:var(--bad);color:#fff}
+input,select{font:inherit;padding:9px 11px;border:1px solid var(--ln);border-radius:9px;background:var(--bg);color:var(--ink);max-width:100%}
+input[type=text],input[type=search]{width:100%}
+.prog{display:flex;gap:4px;margin:8px 0}.prog i{flex:1;height:5px;border-radius:3px;background:var(--ln)}.prog i.on{background:var(--tl)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.stat{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:14px}.stat b{display:block;font:800 26px "Bricolage Grotesque"}
+.qr{width:120px;height:120px;background:#fff;padding:6px;border-radius:8px;border:1px solid var(--ln)}
+.lk{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
+.lk span{font-size:11px;padding:6px 2px;text-align:center;border-radius:6px;background:var(--dr);border:1.5px solid var(--de)}.lk .u{border-color:var(--am);background:var(--am);color:#2b2100}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}.tbl td,.tbl th{padding:7px 6px;border-bottom:1px solid var(--ln);text-align:left}
+.xs{overflow-x:auto}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s;z-index:40;max-width:90%}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:900px){.hero .wrap,.two{grid-template-columns:1fr}.roles,.stats{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr;border-top:0;border-left:2px solid var(--ln);margin-left:14px}.steps li{padding:0 0 20px 26px}.steps li::before{top:0;left:-15px}.steps h3{margin-top:2px}}
+@media (max-width:520px){.roles{grid-template-columns:1fr}.hero{padding-top:28px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<button class="logo" onclick="go(null)"><i></i>Privacy Parcel Locker</button>
+<nav class="links" id="lnk" aria-label="Main"><a href="#how">How it works</a><a href="#features">Features</a><a href="#privacy">Privacy</a></nav><button class="btn sm" id="navbtn" onclick="document.getElementById('choose').scrollIntoView({behavior:'smooth'})">Get started</button>
+</div></header>
+
+<main>
+<div id="land">
+<div class="hero"><div class="wrap">
+<div><h1>Receive parcels without sharing your address.</h1>
+<p class="lead">A rider drops your parcel at a smart locker hub near you. Pay securely, then collect it with a QR code whenever you are ready.</p>
+<div class="cta"><button class="btn" onclick="document.getElementById('choose').scrollIntoView({behavior:'smooth'})">Get started</button><a class="btn alt" href="#how" style="text-decoration:none">How it works</a></div></div>
+<div class="wall"><div class="grid" id="wall"></div><p class="mu" style="margin:12px 0 0">Live locker states from the demo hubs: free, waiting for payment, ready for pickup.</p></div>
+</div></div>
+<section id="how"><div class="wrap"><h2>How it works</h2><p class="sub">One order moves through every dashboard and all of them read the same record.</p>
+<ol class="steps"><li><h3>Order</h3><p>Customer picks products and two preferred hubs.</p></li><li><h3>Pack</h3><p>Seller packs and hands over to a rider.</p></li><li><h3>Deliver</h3><p>Rider chooses a hub, a compatible locker is allocated.</p></li><li><h3>Pay</h3><p>Pay now, or after the locker deposit.</p></li><li><h3>Collect</h3><p>Pickup QR unlocks only after payment is verified.</p></li></ol></div></section>
+<section id="features" style="padding-top:0"><div class="wrap"><h2>Features</h2><p class="sub">Built around privacy and one shared order record.</p><div class="feat"><div><b>Private by design</b><span>Seller and rider never see your phone or address.</span></div><div><b>Two preferred hubs</b><span>If the first hub is full, the second one is used.</span></div><div><b>Live order status</b><span>Every step updates all dashboards and notifies you.</span></div><div><b>QR pickup</b><span>Your QR works only after payment is verified.</span></div><div><b>Locker management</b><span>Compatible size, one parcel per locker.</span></div><div><b>Returns and complaints</b><span>Tickets with status, linked to your Delivery ID.</span></div></div></div></section>
+<section id="choose" style="padding-top:0"><div class="wrap"><h2>Choose your role</h2><p class="sub">Open any role. Place an order as Customer, then follow it through the others.</p>
+<div class="roles">
+<div class="role"><h3>Customer</h3><p>Shop, checkout, track, pay, collect with QR, return or complain.</p><button class="btn sm" onclick="go('Customer')">Open Customer</button></div>
+<div class="role"><h3>Seller</h3><p>Incoming orders, stock, packing and rider handover.</p><button class="btn sm" onclick="go('Seller')">Open Seller</button></div>
+<div class="role"><h3>Rider</h3><p>Assigned parcels, hub choice, locker allocation, deposit.</p><button class="btn sm" onclick="go('Rider')">Open Rider</button></div>
+<div class="role"><h3>Admin</h3><p>Users, hubs, lockers, payments, complaints, exceptions.</p><button class="btn sm" onclick="go('Admin')">Open Admin</button></div>
+</div></div></section>
+<div class="pay"><section><div class="wrap"><h2>Payment comes before pickup</h2><p class="sub">The QR stays locked until payment is verified. Payments here are simulated.</p>
+<div class="opt"><b>Pay now</b> at checkout</div><div class="opt"><b>Pay after locker deposit</b></div><div class="opt no"><b>Cash on delivery</b></div></div></section></div>
+<section id="privacy"><div class="wrap"><h2>Privacy and security</h2><p class="sub">Each role sees only what it needs. Orders are linked by Delivery ID, not by personal details.</p><div class="feat"><div><b>Seller sees</b><span>Product, size, quantity, hub and Delivery ID.</span></div><div><b>Rider sees</b><span>Delivery ID, hubs and parcel size.</span></div><div><b>Admin sees</b><span>Masked contact details, full audit log.</span></div></div></div></section>
+</div>
+<div id="app" hidden><div class="bar"><div class="wrap" id="roles"></div></div><div id="view"></div></div>
+</main>
+<footer><div class="wrap">About · Help center · Privacy policy · Terms · Contact<br>Prototype. QR unlocking and payments are simulated. Data is saved in this browser only; the real build will use a shared cloud database.<br><button class="chip" style="margin-top:8px" onclick="resetAll()">Reset demo data</button></div></footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+var K='ppl_proto_v2',S,R=null,T={Customer:'Shop',Seller:'Orders'},cart={},q='',hA='H1',hB='H2',pm='now',tt;
+function seed(){var lk=function(){return['S','S','S','S','M','M','M','L'].map(function(s,i){return{id:'L'+(i+1),s:s,o:null}})};
+return{seq:1000,log:[],notes:[],msgs:[],cx:[],pays:[],orders:[],sess:{},users:[{r:'Admin',id:'ADM-4001',n:'System Admin',e:'admin@demo.pk',h:hs('demo123'),on:1}],
+products:[{id:1,n:'Running shoes',i:'👟',p:8900,s:'M',st:60},{id:2,n:'Wireless earbuds',i:'🎧',p:6500,s:'S',st:60},{id:3,n:'Cotton kurta',i:'👕',p:2400,s:'S',st:60}],
+hubs:[{id:'H1',n:'Gulberg Hub',l:lk()},{id:'H2',n:'DHA Hub',l:lk()},{id:'H3',n:'Saddar Hub',l:lk()}]}}
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!S||!S.users)S=seed();
+function hs(t){var h=5381;for(var i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))>>>0;return h}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+var $=function(i){return document.getElementById(i)},RK={S:1,M:2,L:3},ST=['Placed','Accepted','Packed','With rider','In locker','Ready for pickup','Collected'];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function hub(id){return S.hubs.filter(function(h){return h.id===id})[0]}
+function ord(id){return S.orders.filter(function(o){return o.id===id})[0]}
+function prod(id){return S.products.filter(function(p){return p.id===id})[0]}
+function rs(n){return 'Rs '+n.toLocaleString('en-US')}
+function toast(t){var e=$('toast');e.textContent=t;e.className='toast show';clearTimeout(tt);tt=setTimeout(function(){e.className='toast'},2400)}
+function note(to,t,id){S.notes.unshift({to:to,t:t});S.log.unshift(new Date().toLocaleTimeString()+' · '+(id?id+': ':'')+t);S.notes=S.notes.slice(0,60);S.log=S.log.slice(0,40)}
+function go(r){R=r;$('land').hidden=!!r;$('app').hidden=!r;$('navbtn').hidden=!!r;$('lnk').hidden=!!r;if(r)render();window.scrollTo(0,0)}
+function render(){if(!R)return;$('app').dataset.r=R;$('roles').innerHTML='<span class="who">'+R+(S.sess[R]?' · '+esc(me().n)+' ('+S.sess[R]+')':' portal')+'</span>';
+$('roles').innerHTML+=S.sess[R]?'<button class="btn alt sm" onclick="out()">Log out</button>':'<button class="btn alt sm" onclick="go(null)">Back to home</button>';if(!S.sess[R]){$('view').className='';return vAuth()}({Customer:vC,Seller:vS,Rider:vR,Admin:vA})[R]();var f=$('view').firstElementChild;$('view').className=f&&f.classList.contains('sub2')?'side':''}
+function sub(l){return'<div class="sub2">'+l.map(function(t){return'<button class="chip'+(T[R]===t?' on':'')+'" onclick="T[R]=\''+t+'\';render()">'+t+'</button>'}).join('')+'</div>'}
+function nbox(to,title){var n=S.notes.filter(function(x){return x.to===to}).slice(0,6);return'<div class="card"><h3>'+title+'</h3>'+(n.length?n.map(function(x){return'<div class="row"><span>'+esc(x.t)+'</span></div>'}).join(''):'<p class="mu">No notifications yet.</p>')+'</div>'}
+function badge(o){var c=(o.status==='Awaiting locker'||o.status==='Rejected')?'b':o.status==='Collected'?'g':o.status==='Ready for pickup'?'g':(o.status==='In locker'&&!o.paid)?'a':'';return'<span class="badge '+c+'">'+(o.status==='In locker'&&!o.paid?'Awaiting payment':o.status)+'</span>'}
+function prog(o){var i=ST.indexOf(o.status==='Awaiting locker'?'With rider':o.status);return'<div class="prog">'+ST.map(function(s,k){return'<i class="'+(k<=i?'on':'')+'"></i>'}).join('')+'</div>'}
+function qr(c){var h=7,r='';for(var i=0;i<81;i++){var x=i%9,y=(i/9)|0;h=(h*1103515245+12345+c.charCodeAt(i%c.length))>>>0;var f=(x<3&&y<3)||(x>5&&y<3)||(x<3&&y>5);if(f?!(x%6==1&&y%6==1&&0)&&!((x%6==1)&&(y%6==1)):((h>>16)&1))r+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>'}return'<svg class="qr" viewBox="0 0 9 9" role="img" aria-label="Pickup QR code">'+r+'</svg>'}
+var AM='login';
+function vAuth(){var c=AM==='login'||R==='Admin';$('view').innerHTML='<div class="card" style="max-width:420px;margin:0 auto"><h2>'+R+' portal</h2><div class="sub2"><button class="chip'+(c?' on':'')+'" onclick="AM=\'login\';render()">Log in</button>'+(R==='Admin'?'':'<button class="chip'+(c?'':' on')+'" onclick="AM=\'new\';render()">Create account</button>')+'</div><div style="display:grid;gap:10px">'+(c?'':'<input type="text" id="a_n" placeholder="Full name" aria-label="Full name"><input type="text" id="a_p" placeholder="Phone number" aria-label="Phone number">')+'<input type="text" id="a_e" placeholder="Email" aria-label="Email"><input type="password" id="a_w" placeholder="Password" aria-label="Password" style="width:100%"><button class="btn" onclick="'+(c?'login()':'signup()')+'">'+(c?'Log in':'Create account')+'</button>'+(R==='Admin'?'<p class="mu" style="margin:0">Demo admin: admin@demo.pk · password demo123</p>':(c?'<p class="mu" style="margin:0">New here? Create an account first, then log in.</p>':''))+'</div><p class="mu">Prototype only. Do not enter real passwords. The real build uses secure server-side login.'+(R==='Admin'?' Admin accounts are created by invitation only.':'')+'</p></div>'}
+function login(){var e=$('a_e').value.trim().toLowerCase(),w=$('a_w').value,u=S.users.filter(function(x){return x.r===R&&x.e===e&&x.h===hs(w)})[0];if(!u)return toast('Email or password is incorrect.');if(!u.on)return toast('This account is suspended. Contact admin.');S.sess[R]=u.id;save();render()}
+function signup(){var n=$('a_n').value.trim(),p=$('a_p').value.trim(),e=$('a_e').value.trim().toLowerCase(),w=$('a_w').value;if(!n||!e||w.length<6||(R==='Customer'&&!p))return toast('Fill all fields. Password needs 6 or more characters.');if(S.users.some(function(x){return x.e===e}))return toast('This email is already registered.');var id={Customer:'CUS-',Seller:'SEL-',Rider:'RID-'}[R]+(1000+S.users.length*7+Math.floor(Math.random()*6));S.users.push({r:R,id:id,n:n,e:e,ph:p,a:'',h:hs(w),on:1});note('A','New '+R+' account '+id);AM='login';save();render();$('a_e').value=e;toast('Account created. Your ID is '+id+'. Please log in.')}
+function demo(){S.sess[R]=S.users.filter(function(x){return x.r===R})[0].id;save();render()}
+function out(){delete S.sess[R];save();go(null);toast('You are logged out. Choose another role.')}
+function me(){return S.users.filter(function(x){return x.id===S.sess[R]})[0]}
+function resetOrders(){var f=seed();S.orders=[];S.cx=[];S.pays=[];S.msgs=[];S.notes=[];S.log=[];S.hubs=f.hubs;S.products=f.products;note('A','Demo reset: orders, payments, lockers and stock cleared. Accounts kept.');note('C','Demo data was reset by admin.');note('S','Demo data was reset by admin.');note('R','Demo data was reset by admin.');save();render();toast('Reset done. Accounts were kept.')}
+function resetAll(){S=seed();note('A','Demo reset: everything cleared.');save();go(null);toast('Everything was reset.')}
+function mine(){return S.orders.filter(function(o){return o.cu===S.sess.Customer})}
+/* CUSTOMER */
+function vC(){var t=T.Customer;$('view').innerHTML=sub(['Shop','Orders','Locker','Messages','Returns','Complaints','Alerts'])+(t==='Shop'?'<div class="two"><div><input type="search" placeholder="Search products" value="'+esc(q)+'" oninput="q=this.value;pl()" aria-label="Search products"><div id="pl" style="margin-top:12px"></div></div><div id="ct"></div></div>':t==='Orders'?ords():t==='Locker'?lockv():t==='Messages'?msgv():t==='Returns'?retv():t==='Complaints'?cmpv():nbox('C','Notifications'));if(t==='Shop'){pl();ct()}}
+function pl(){var l=S.products.filter(function(p){return p.n.toLowerCase().indexOf(q.toLowerCase())>-1});$('pl').innerHTML=l.length?l.map(function(p){return'<div class="card"><div class="row" style="border:0"><div style="display:flex;gap:12px;align-items:center"><span class="pic">'+p.i+'</span><div><b>'+p.n+'</b><div class="mu">'+rs(p.p)+' · Size '+p.s+' · '+(p.st?p.st+' in stock':'Out of stock')+'</div></div></div><button class="btn sm" '+(p.st?'':'disabled')+' onclick="add('+p.id+')">Add</button></div></div>'}).join(''):'<p class="mu">No products match your search.</p>'}
+function add(id){var p=prod(id);if((cart[id]||0)>=p.st)return toast('No more stock for '+p.n);cart[id]=(cart[id]||0)+1;ct()}
+function dec(id){cart[id]--;if(cart[id]<1)delete cart[id];ct()}
+function ct(){var ids=Object.keys(cart),tot=0,h='<div class="card"><h3>Cart</h3>';if(!ids.length)h+='<p class="mu">Your cart is empty. Add a product to start.</p>';
+ids.forEach(function(k){var p=prod(+k);tot+=p.p*cart[k];h+='<div class="row"><span>'+p.n+' × '+cart[k]+'</span><button class="btn alt sm" onclick="dec('+k+')">Remove 1</button></div>'});
+var op=S.hubs.map(function(x){return x}),so=function(v){return op.map(function(x){return'<option value="'+x.id+'"'+(x.id===v?' selected':'')+'>'+x.n+'</option>'}).join('')};
+h+='<p><b>Total '+rs(tot)+'</b></p><p class="mu">Your details. Private: never shown to seller or rider.</p><div style="display:grid;gap:8px"><input type="text" id="d_n" placeholder="Full name" value="'+esc(me().n)+'" aria-label="Name"><input type="text" id="d_p" placeholder="Phone number" value="'+esc(me().ph||'')+'" aria-label="Phone"><input type="text" id="d_a" placeholder="Area / location" value="'+esc(me().a||'')+'" aria-label="Area"></div><p class="mu">First and second preferred hub</p><div style="display:grid;gap:8px"><select aria-label="First hub" onchange="hA=this.value">'+so(hA)+'</select><select aria-label="Second hub" onchange="hB=this.value">'+so(hB)+'</select></div><p class="mu">Payment</p><label><input type="radio" name="pm" '+(pm==='now'?'checked':'')+' onchange="pm=\'now\'"> Pay now</label><br><label><input type="radio" name="pm" '+(pm==='later'?'checked':'')+' onchange="pm=\'later\'"> Pay after locker deposit</label><p class="mu">No cash on delivery. Your pickup QR unlocks only after payment is verified.</p><button class="btn" style="width:100%" onclick="place()">Place order</button></div>';$('ct').innerHTML=h}
+function place(){var ids=Object.keys(cart);if(!ids.length)return toast('Add a product first.');if(hA===hB)return toast('Choose two different hubs.');var dn=$('d_n').value.trim(),dp=$('d_p').value.trim(),da=$('d_a').value.trim();if(!dn||!dp||!da)return toast('Enter your name, phone and area.');
+var tot=0,sz='S',items=ids.map(function(k){var p=prod(+k);tot+=p.p*cart[k];if(RK[p.s]>RK[sz])sz=p.s;p.st-=cart[k];return{p:p.id,n:cart[k]}});
+var o={id:'DLV-'+(++S.seq),cu:S.sess.Customer,c:{n:dn,p:dp,a:da},items:items,total:tot,hubs:[hA,hB],pm:pm,paid:false,status:'Placed',size:sz,hub:null,lk:null,code:null};S.orders.unshift(o);
+if(pm==='now')paynow(o,true);note('S','New order '+o.id+' ('+rs(tot)+')',o.id);note('C','Order '+o.id+' placed.');cart={};T.Customer='Orders';save();render();toast('Order placed')}
+function paynow(o,q){o.paid=true;S.pays.unshift({o:o.id,a:o.total,m:o.pm==='now'?'Pay now':'After deposit',t:new Date().toLocaleTimeString()});if(o.status==='In locker'){o.status='Ready for pickup';note('C',o.id+': payment verified. Your pickup QR is active.',o.id)}}
+function pay(id){paynow(ord(id));save();render();toast('Payment verified (simulated)')}
+function scan(id){var o=ord(id),h=hub(o.hub);h.l.forEach(function(l){if(l.o===id)l.o=null});o.status='Collected';note('C',id+' collected from locker '+o.lk+'.',id);note('S',id+' delivered to customer.',id);save();render();toast('Locker opened. Parcel collected.')}
+function ret(id){var v=$('r_'+id).value.trim();if(!v)return toast('Enter a return reason.');S.cx.unshift({n:'RET-'+(++S.seq),o:id,k:'Return',t:v,open:true,ap:''});note('S','Return requested for '+id,id);note('C','Return request sent for '+id+'.');save();render()}
+function cmp(){var o=$('c_o').value,v=$('c_t').value.trim();if(!o||!v)return toast('Choose an order and describe the problem.');var n='TKT-'+(++S.seq);S.cx.unshift({n:n,o:o,k:'Complaint',t:$('c_k').value+': '+v,open:true});note('C','Complaint '+n+' opened for '+o+'.',o);save();render()}
+function cmpv(){var os=mine(),c=S.cx.filter(function(c){return c.k==='Complaint'&&ord(c.o)&&ord(c.o).cu===S.sess.Customer});return'<div class="card"><h3>Complaint center</h3>'+(os.length?'<div style="display:grid;gap:8px"><select id="c_o" aria-label="Order">'+os.map(function(o){return'<option>'+o.id+'</option>'}).join('')+'</select><select id="c_k" aria-label="Issue type"><option>Delivery issue</option><option>Damaged parcel</option><option>QR problem</option><option>Other</option></select><input type="text" id="c_t" placeholder="Describe the problem" aria-label="Details"><button class="btn sm" onclick="cmp()">Submit complaint</button></div>':'<p class="mu">Place an order first.</p>')+'</div><div class="card"><h3>My tickets</h3>'+(c.length?c.map(function(x){return'<div class="row"><span>'+x.n+' · '+x.o+'<div class="mu">'+esc(x.t)+'</div></span><span class="badge '+(x.open?'a':'g')+'">'+(x.open?'Open':'Resolved')+'</span></div>'}).join(''):'<p class="mu">No tickets yet.</p>')+'</div>'}
+function retv(){var l=mine().filter(function(o){return o.status==='Collected'}),r=S.cx.filter(function(c){return c.k==='Return'&&ord(c.o)&&ord(c.o).cu===S.sess.Customer});return'<div class="card"><h3>Request a return</h3>'+(l.length?l.map(function(o){return'<div class="row"><span>'+o.id+'</span><span style="display:flex;gap:6px"><input type="text" id="r_'+o.id+'" placeholder="Reason" aria-label="Return reason"><button class="btn sm" onclick="ret(\''+o.id+'\')">Request</button></span></div>'}).join(''):'<p class="mu">Only collected orders can be returned.</p>')+'</div><div class="card"><h3>My returns</h3>'+(r.length?r.map(function(c){return'<div class="row"><span>'+c.n+' · '+c.o+'<div class="mu">'+esc(c.t)+'</div></span><span class="badge '+(c.ap==='Approved'?'g':c.ap==='Rejected'?'b':'a')+'">'+(c.ap||'Pending')+'</span></div>'}).join(''):'<p class="mu">No returns yet.</p>')+'</div>'}
+function lockv(){var l=mine().filter(function(o){return o.lk&&o.status!=='Collected'});if(!l.length)return'<div class="card"><p>No parcel in a locker yet. You will get a notification when the rider places it.</p></div>';return l.map(function(o){return'<div class="card"><div class="row" style="border:0"><b>'+o.id+'</b>'+badge(o)+'</div><p>Hub: <b>'+hub(o.hub).n+'</b>'+(o.hub!==o.hubs[0]?' (your second choice)':'')+' · Locker <b>'+o.lk+'</b></p>'+(o.paid?(o.status==='Ready for pickup'?qr(o.code)+'<p><button class="btn sm" onclick="scan(\''+o.id+'\')">Simulate QR scan at locker</button></p>':''):'<p>Your QR is locked until payment is verified.</p><button class="btn sm" onclick="pay(\''+o.id+'\')">Pay '+rs(o.total)+' to unlock</button>')+'</div>'}).join('')}
+function ords(){if(!mine().length)return'<div class="card"><p>No orders yet. Go to Shop and place your first order.</p></div>';
+return mine().map(function(o){var it=o.items.map(function(i){return prod(i.p).n+' × '+i.n}).join(', '),x='';
+if(o.status==='In locker'&&!o.paid)x='<p>Parcel is in <b>'+hub(o.hub).n+'</b>, locker '+o.lk+'. QR is locked until payment is verified.</p><button class="btn sm" onclick="pay(\''+o.id+'\')">Pay '+rs(o.total)+'</button>';
+if(o.status==='Ready for pickup')x='<p>Collect from <b>'+hub(o.hub).n+'</b>, locker '+o.lk+'.</p>'+qr(o.code)+'<p><button class="btn sm" onclick="scan(\''+o.id+'\')">Simulate QR scan</button></p>';
+if(o.status==='Collected')x='<p class="mu">Collected. Use Returns or Complaints if you need help.</p>';
+return'<div class="card"><div class="row" style="border:0"><b>'+o.id+'</b>'+badge(o)+'</div>'+prog(o)+'<div class="mu">'+it+' · '+rs(o.total)+' · '+(o.pm==='now'?'Pay now':'Pay after deposit')+(o.paid?' · Paid':' · Unpaid')+'</div>'+x+'</div>'}).join('')}
+function inbox(){return nbox('C','Notifications')+'<div class="card"><h3>Messages to seller</h3>'+S.msgs.map(function(m){return'<div class="row"><span><b>'+m.f+':</b> '+esc(m.t)+'</span></div>'}).join('')+'<div style="display:flex;gap:8px;margin-top:10px"><input type="text" id="mi" placeholder="Write a message" aria-label="Message"><button class="btn sm" onclick="sendm(\'Customer\',\'S\')">Send</button></div></div>'}
+function msgv(){var C=R==='Customer',l=S.msgs.filter(function(m){return C?m.cu===S.sess.Customer:true}),os=C?mine():S.orders;return'<div class="card"><h3>Messages</h3>'+(l.length?l.map(function(m){return'<div class="row"><span><b>'+m.f+'</b> <span class="mu">'+(m.o||'General')+'</span><br>'+esc(m.t)+'</span></div>'}).join(''):'<p class="mu">No messages yet.</p>')+'<div style="display:grid;gap:8px;margin-top:10px"><select id="mo" aria-label="Delivery ID"><option value="">General</option>'+os.map(function(o){return'<option>'+o.id+'</option>'}).join('')+'</select><input type="text" id="mi" placeholder="Write a message" aria-label="Message"><button class="btn sm" onclick="sendm()">Send</button></div><p class="mu">Chat stays inside the app. Phone numbers are never shared.</p></div>'}
+function sendm(){var v=$('mi').value.trim();if(!v)return toast('Write a message first.');var C=R==='Customer',o=$('mo').value,x=o?ord(o):null;S.msgs.push({f:C?'Customer':'Seller',t:v,o:o,cu:C?S.sess.Customer:(x?x.cu:'')});note(C?'S':'C','New message'+(o?' on '+o:'')+'.');save();render()}
+/* SELLER */
+function vS(){var t=T.Seller;$('view').innerHTML=sub(['Orders','Products','Messages','Returns'])+(t==='Orders'?sord():t==='Products'?sprod():t==='Returns'?sret():msgv())+(t==='Orders'?nbox('S','Notifications'):'')}
+function sord(){if(!S.orders.length)return'<div class="card"><p>No incoming orders. Place one from the Customer dashboard.</p></div>';
+return S.orders.map(function(o){var a=o.status==='Placed'?'<button class="btn sm" onclick="step(\''+o.id+'\',\'Accepted\')">Accept</button> <button class="btn alt sm" onclick="rej(\''+o.id+'\')">Reject</button>':o.status==='Accepted'?'<button class="btn sm" onclick="step(\''+o.id+'\',\'Packed\')">Mark as packed</button>':o.status==='Packed'?'<button class="btn sm" onclick="step(\''+o.id+'\',\'With rider\')">Hand over to rider</button>':'';
+return'<div class="card"><div class="row" style="border:0"><b>'+o.id+'</b>'+badge(o)+'</div><div class="mu">'+o.items.map(function(i){return prod(i.p).n+' × '+i.n}).join(', ')+' · Locker size '+o.size+' · Hubs: '+o.hubs.map(function(h){return hub(h).n}).join(', ')+' · '+(o.paid?'Paid':'Unpaid')+' · Customer details hidden</div><div style="margin-top:8px">'+a+'</div></div>'}).join('')}
+function step(id,s){var o=ord(id);o.status=s;if(s==='With rider'){note('R','Parcel '+id+' is ready for pickup from seller. Size '+o.size+'.',id)}else note('C',id+(s==='Accepted'?': seller accepted your order.':': seller packed your order.'),id);save();render()}
+function rej(id){var o=ord(id);o.status='Rejected';o.items.forEach(function(i){prod(i.p).st+=i.n});note('C',id+': the seller could not fulfil this order.',id);save();render()}
+function sret(){var r=S.cx.filter(function(c){return c.k==='Return'});return'<div class="card"><h3>Return requests</h3>'+(r.length?r.map(function(c){return'<div class="row"><span>'+c.n+' · '+c.o+'<div class="mu">'+esc(c.t)+'</div></span>'+(c.ap?'<span class="badge '+(c.ap==='Approved'?'g':'b')+'">'+c.ap+'</span>':'<span><button class="btn sm" onclick="rap(\''+c.n+'\',\'Approved\')">Approve</button> <button class="btn alt sm" onclick="rap(\''+c.n+'\',\'Rejected\')">Reject</button></span>')+'</div>'}).join(''):'<p class="mu">No return requests.</p>')+'</div>'}
+function rap(n,v){var c=S.cx.filter(function(x){return x.n===n})[0];c.ap=v;c.open=false;note('C','Return '+n+' '+v.toLowerCase()+'.',c.o);save();render()}
+function sprod(){return'<div class="card"><h3>Products and stock</h3>'+S.products.map(function(p){return'<div class="row"><span><b>'+p.n+'</b><div class="mu">'+rs(p.p)+' · Size '+p.s+'</div></span><span>'+p.st+' <button class="btn alt sm" onclick="stk('+p.id+',-1)" aria-label="Decrease stock">-</button> <button class="btn alt sm" onclick="stk('+p.id+',1)" aria-label="Increase stock">+</button></span></div>'}).join('')+'</div>'}
+function stk(id,d){var p=prod(id);p.st=Math.max(0,p.st+d);save();render()}
+/* RIDER */
+function vR(){var l=S.orders.filter(function(o){return o.status==='With rider'||o.status==='Awaiting locker'}),d=S.orders.filter(function(o){return ST.indexOf(o.status)>=4});
+$('view').innerHTML='<h2>Assigned parcels</h2>'+(l.length?l.map(function(o){return'<div class="card"><div class="row" style="border:0"><b>'+o.id+'</b><span class="badge '+(o.status==='Awaiting locker'?'b':'a')+'">'+(o.status==='Awaiting locker'?'Awaiting locker':'Size '+o.size)+'</span></div><div class="mu">First hub: '+hub(o.hubs[0]).n+' · Backup hub: '+hub(o.hubs[1]).n+' · Size '+o.size+'</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn sm" onclick="dep(\''+o.id+'\')">'+(o.status==='Awaiting locker'?'Retry locker search':'Find locker and confirm deposit')+'</button></div></div>'}).join(''):'<div class="card"><p>No parcels assigned. The seller must hand an order to a rider first.</p></div>')+'<div class="card"><h3>Delivered</h3>'+(d.length?d.map(function(o){return'<div class="row"><span>'+o.id+' · '+hub(o.hub).n+' · locker '+o.lk+'</span>'+badge(o)+'</div>'}).join(''):'<p class="mu">Nothing delivered yet.</p>')+'</div>'+nbox('R','Notifications')}
+function dep(id){var o=ord(id),h,c,fb=0;for(var k=0;k<2&&!c;k++){h=hub(o.hubs[k]);c=h.l.filter(function(x){return!x.o&&RK[x.s]>=RK[o.size]}).sort(function(a,b){return RK[a.s]-RK[b.s]})[0];if(c)fb=k}
+if(!c){o.status='Awaiting locker';S.cx.unshift({n:'EXC-'+(++S.seq),o:id,k:'Exception',t:'No compatible locker at either preferred hub',open:true});note('C',id+': both preferred hubs are full. Your parcel is waiting for a locker.',id);note('R',id+': no size '+o.size+' locker free at both hubs. Retry later.',id);save();render();return toast('No locker at either hub. Marked Awaiting locker.')}
+c.o=id;o.hub=h.id;o.lk=c.id;o.code='QR'+Math.floor(100000+Math.random()*900000);o.status='In locker';
+note('C',id+': your parcel is placed in the locker at '+h.n+' ('+c.id+')'+(fb?'. Your first hub had no free locker, so your second hub was used':'')+'.',id);if(o.paid){o.status='Ready for pickup';note('C',id+': payment verified. Your pickup QR is active.',id)}else note('C',id+': pay now to unlock your pickup QR.',id);
+note('S',id+' deposited at '+h.n+'.',id);save();render();toast('Deposited in locker '+c.id)}
+/* ADMIN */
+function vA(){var tl=0,us=0,rv=0,oc=0;S.hubs.forEach(function(h){h.l.forEach(function(l){tl++;if(l.o)us++})});S.pays.forEach(function(p){rv+=p.a});S.cx.forEach(function(c){if(c.open)oc++});
+$('view').innerHTML='<div class="stats"><div class="stat"><b>'+S.orders.length+'</b><span class="mu">Orders</span></div><div class="stat"><b>'+rs(rv)+'</b><span class="mu">Verified payments</span></div><div class="stat"><b>'+us+'/'+tl+'</b><span class="mu">Lockers used</span></div><div class="stat"><b>'+oc+'</b><span class="mu">Open issues</span></div></div>'+
+'<div class="two"><div><div class="card"><h3>Hubs and lockers</h3>'+S.hubs.map(function(h){return'<p style="margin:10px 0 0"><b>'+h.n+'</b></p><div class="lk">'+h.l.map(function(l){return'<span class="'+(l.o?'u':'')+'" title="'+(l.o||'Free')+'">'+l.id+' '+l.s+'</span>'}).join('')+'</div>'}).join('')+'</div>'+
+'<div class="card"><h3>Orders</h3><div class="xs"><table class="tbl"><tr><th>Order</th><th>Status</th><th>Paid</th><th>Locker</th></tr>'+S.orders.map(function(o){return'<tr><td>'+o.id+'</td><td>'+o.status+'</td><td>'+(o.paid?'Yes':'No')+'</td><td>'+(o.lk?hub(o.hub).n+' '+o.lk:'-')+'</td></tr>'}).join('')+'</table></div>'+(S.orders.length?'':'<p class="mu">No orders yet.</p>')+'</div>'+
+'<div class="card"><h3>Payments</h3>'+(S.pays.length?S.pays.map(function(p){return'<div class="row"><span>'+p.o+' · '+p.m+'</span><b>'+rs(p.a)+'</b></div>'}).join(''):'<p class="mu">No payments yet.</p>')+'</div></div>'+
+'<div><div class="card"><h3>Complaints, returns and exceptions</h3>'+(S.cx.length?S.cx.map(function(c,i){return'<div class="row"><span><span class="badge '+(c.k==='Exception'?'b':'a')+'">'+c.k+'</span> '+c.o+'<div class="mu">'+esc(c.t)+'</div></span>'+(c.open?'<button class="btn sm" onclick="S.cx['+i+'].open=false;save();render()">Resolve</button>':'<span class="badge g">Resolved</span>')+'</div>'}).join(''):'<p class="mu">Nothing to review.</p>')+'</div>'+
+'<div class="card"><h3>Users</h3>'+S.users.map(function(u,i){return'<div class="row"><span>'+u.r+': '+esc(u.n)+'<div class="mu">'+u.id+(u.ph?' · phone ••••'+u.ph.slice(-3):'')+'</div></span>'+(u.r==='Admin'?'<span class="badge g">Active</span>':'<button class="btn '+(u.on?'alt ':'')+'sm" onclick="S.users['+i+'].on=!S.users['+i+'].on;note(\'A\',\'User '+u.id+(u.on?' suspended':' activated')+'\');save();render()">'+(u.on?'Suspend':'Activate')+'</button>')+'</div>'}).join('')+'</div><div class="card"><h3>QR and hardware integration</h3><div class="row"><span>QR provider (other group)</span><span class="badge a">Not connected</span></div><div class="row"><span>Locker controller</span><span class="badge a">Simulated</span></div><p class="mu">Adapter slots are ready. Share the other group’s API details to connect them.</p></div>'+
+'<div class="card"><h3>Audit log (recent actions)</h3>'+(S.log.length?S.log.slice(0,10).map(function(x){return'<div class="mu" style="padding:3px 0">'+esc(x)+'</div>'}).join(''):'<p class="mu">No activity yet.</p>')+'</div><button class="btn alt" onclick="resetOrders()">Reset orders and stock</button> <button class="btn alt" onclick="resetAll()">Reset everything</button></div></div>'}
+/* landing wall */
+(function(){var s='frhhfrfrhfrf'.split('');$('wall').innerHTML=s.map(function(c,i){return'<div class="door '+(c==='r'?'r':c==='h'?'h':'')+'" aria-label="Locker A'+(i+1)+'">A'+(i+1)+'</div>'}).join('')})();
+</script>
+</body>
+</html>
